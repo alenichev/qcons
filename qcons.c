@@ -63,11 +63,11 @@ struct xinfo {
 	int cur_direction;
 } main_win;
 
-char* win_name = "qconsole";
+char* win_name = "qcons";
 
 /* args to pass to xterm; requires a trailing blank -into option */
 char	*xterm_args[6] = {
-	"xterm", "-name", "qconsole", "-into", "",
+	"xterm", "-name", "qcons", "-into", "",
 	NULL
 };
 
