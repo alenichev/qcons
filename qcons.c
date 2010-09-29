@@ -177,7 +177,7 @@ main(int argc, char* argv[])
 		case UnmapNotify:
 			/* xterm died, respawn it */
 			if (!respawning)
-				xterm_handler(NULL);
+				xterm_handler(0);
 
 			break;
 
