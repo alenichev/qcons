@@ -74,6 +74,7 @@ char	*xterm_args[6] = {
 const struct option longopts[] = {
 	{ "display",	required_argument,	NULL,	'd' },
 	{ "height",	required_argument,	NULL,	'h' },
+	{ "key",	required_argument,	NULL,	'k' },
 	{ "speed",	required_argument,	NULL,	's' },
 
 	{ NULL,         0,                      NULL,   0 }
@@ -85,7 +86,7 @@ int	respawning = 0;
 
 extern	char *__progname;
 
-void	draw_window(const char *);
+void	draw_window(const char *, const char *);
 void	scroll(int direction, int quick);
 void	xterm_handler(int sig);
 void	exit_handler(int sig);
@@ -95,7 +96,7 @@ void	usage(void);
 int
 main(int argc, char* argv[])
 {
-	char *display = NULL, *p;
+	char *display = NULL, *key = "o", *p;
 	int c;
 
 	bzero(&main_win, sizeof(struct xinfo));
@@ -114,6 +115,10 @@ main(int argc, char* argv[])
 			if (*p || main_win.height < 1)
 				errx(1, "illegal height value -- %s", optarg);
 
+			break;
+
+		case 'k':
+			key = optarg;
 			break;
 
 		case 's':
@@ -138,7 +143,7 @@ main(int argc, char* argv[])
 	signal(SIGTERM, exit_handler);
 
 	/* giddy up */
-	draw_window(display);
+	draw_window(display, key);
 
 	/* fire up xterm */
 	signal(SIGCHLD, xterm_handler);
@@ -193,7 +198,7 @@ main(int argc, char* argv[])
 }
 
 void
-draw_window(const char *display)
+draw_window(const char *display, const char *key)
 {
 	int rc;
 	XSetWindowAttributes attributes;
@@ -235,11 +240,11 @@ draw_window(const char *display)
 	XSelectInput(main_win.dpy, main_win.win, SubstructureNotifyMask |
 		FocusChangeMask);
 
-	/* bind to control+o */
-	/* TODO: allow this key to be configurable */
-	XGrabKey(main_win.dpy, XKeysymToKeycode(main_win.dpy, XK_o),
-		ControlMask, DefaultRootWindow(main_win.dpy), False,
-		GrabModeAsync, GrabModeAsync);
+	/* bind to control+configured key */
+	XGrabKey(main_win.dpy, XKeysymToKeycode(main_win.dpy,
+		XStringToKeysym(key)), ControlMask,
+		DefaultRootWindow(main_win.dpy), False, GrabModeAsync,
+		GrabModeAsync);
 }
 
 void
@@ -349,6 +354,7 @@ void
 usage(void)
 {
 	fprintf(stderr, "usage: %s %s\n", __progname,
-		"[-display host:dpy] [-height <pixels>] [-speed <1-10>]");
+		"[-display host:dpy] [-height <pixels>] [-key button]\n"
+		"\t\t[-speed <1-10>]");
 	exit(1);
 }
