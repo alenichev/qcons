@@ -14,10 +14,10 @@ INCLUDES= -I$(X11BASE)/include
 LDPATH	= -L$(X11BASE)/lib
 LIBS	= -lX11
 
-PROG	= qconsole
-OBJS	= qconsole.o
+PROG	= qcons
+OBJS	= qcons.o
 
-VERS	:= `grep Id qconsole.c | sed -e 's/.*,v //' -e 's/ .*//'`
+VERS	:= `grep Id qcons.c | sed -e 's/.*,v //' -e 's/ .*//'`
 
 all: $(PROG)
 
