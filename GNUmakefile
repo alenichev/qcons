@@ -8,7 +8,7 @@ CFLAGS+=        -Wsign-compare
 all:		qcons
 
 qcons:		qcons.c
-	$(CC) $(CFLAGS) -o qcons qcons.c $(LDADD)
+	$(CC) $(CFLAGS) -D_GNU_SOURCE -o qcons qcons.c $(LDADD)
 
 clean cleandir:
 	rm -f *.o qcons *.core core
